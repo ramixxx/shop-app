@@ -30,32 +30,63 @@
   </div>
 </template>
 <script>
+import { mapState } from 'vuex';
 import axios from "axios";
 import Navbar from './navbar.vue';
 import store from '../store/index.js';
 
 export default {
-  components: {
-    Navbar
-  },
-  props: [
-    'allproducts'
-  ],
-  methods: {
-    addToCart: function (product) {
-      store.commit('INCREMENT');
-      store.commit('addItemToCart', product);
-      store.commit('addToCurrentTotalPrice', product.price);
+    components: {
+      Navbar
+    },
+    props: [
+      'allproducts'
+    ],
+    computed: {
+        ...mapState({
+            cartItemCount: state => state.cartItemCount,
+            cartItems: state => state.cartItems,
+            totalPrice: state => state.totalPrice
+        })
+    },
+    methods: {
+        addToCartPost: function(product) {
+            product['quantity'] = 1;
+            store.commit('INCREMENT');
+            store.commit('addToCurrentTotalPrice', product.price);
+            store.commit('addItemToCart', product);
+            
+            const requestOptions = {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ product: JSON.stringify(product), "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
+            };
+            fetch("/addProductToCart", requestOptions)
+              .then(response => console.log(response));
+        },
 
-      const requestOptions = {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ product: JSON.stringify(product), "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
-      };
-      fetch("/addProductToCart", requestOptions)
-        .then(response => response.json())
-        .then(data => (console.log(data)));
+        addToCart: function (product) {
+            let uuid = product.uuid;
+            let currentCartItems = this.cartItems;
+
+            var i;
+            if (currentCartItems.length == 0) {
+              this.addToCartPost(product);
+            } else {
+                for (i = 0; i < currentCartItems.length; i++) {
+                    if(currentCartItems[i].uuid === uuid) {
+                        currentCartItems[i].quantity++;
+                        store.commit('INCREMENT');
+                        store.commit('addToCurrentTotalPrice', product.price);
+                        store.commit('setAllCartItems', currentCartItems);
+                        break;
+                    } else {
+                        this.addToCartPost(product);
+                        break;
+                    }
+                } 
+            }
+        }
     }
-  }
 };
 </script>

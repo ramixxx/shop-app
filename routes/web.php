@@ -22,3 +22,5 @@ Route::post('/addProductToCart', [CartController::class, 'addProductToCart']);
 Route::get('/getCartProducts', [CartController::class, 'getCartProducts']);
 
 Route::get('/clearCartProducts', [CartController::class, 'clearCartProducts']);
+
+Route::post('/manageProductQuantity', [CartController::class, 'manageProductQuantity']);

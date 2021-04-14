@@ -17,6 +17,7 @@ class CreateCartsTable extends Migration
             $table->id();
             $table->uuid('uuid');
             $table->string('session_id');
+            $table->integer('quantity');
             $table->timestamps();
         });
     }

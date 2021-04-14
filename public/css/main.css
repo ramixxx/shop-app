@@ -112,3 +112,7 @@ ul.dropdown-content {
 .cart-item-badge {
 	min-width: 0px !important;
 }
+
+.counter-div {
+	border:1px solid black;
+}

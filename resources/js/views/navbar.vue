@@ -19,17 +19,19 @@
             <div v-if="cartItems.length > 0">
                 <table class="cart-table">
                     <tr v-for="cartItem in cartItems">
-                      <td><img :src="cartItem.image_path" class="product-image-cart"></td>
-                      <td>{{ cartItem.name }}</td>
-                      <td>{{ cartItem.price }}</td>
+                        <td><img :src="cartItem.image_path" class="product-image-cart"></td>
+                        <td>{{ cartItem.name }}</td>
+                        <td>{{ cartItem.price }}</td>
+                        <td>
+                            <a class="waves-effect waves-light btn-small" v-on:click="increase(cartItem)">+</a>
+                            {{ cartItem.quantity }} 
+                            <a class="waves-effect waves-light btn-small" v-on:click="decrease(cartItem)">-</a>
+                        </td>
                     </tr>
                 </table>
                 <p class="total-price"> Total : {{ totalPrice }} </p>
-                <a class="waves-effect waves-light btn-small buy-button">Buy</a>
+                <a class="waves-effect waves-light btn-small buy-button">Checkout</a>
                 <a class="waves-effect waves-light btn-small add-to-cart-button" v-on:click="clearCart">Clear all</a>
-            </div>
-            <div v-else>
-                <p>You dont have anything in cart!</p>
             </div>
         </ul>
     </div>
@@ -52,19 +54,68 @@ export default {
   props: [
   ],
   methods: {
-    clearCart: function () {
+    clearCart: function() {
         const requestOptions = {
             method: "GET",
             headers: { "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
         };
-        fetch("/clearCartProducts", requestOptions).then(store.commit('RESET_MODULE'))
-            
+        fetch("/clearCartProducts", requestOptions).then(store.commit('RESET_MODULE'))       
+    },
+
+    manageProductQuantity: function(currentCartItems) {
+        const requestOptions = {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ products: JSON.stringify(currentCartItems), "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
+        };
+        fetch("/manageProductQuantity", requestOptions)
+            .then(response => console.log(response));
+    },
+
+    increase: function(cartItem) {
+        let uuid = cartItem.uuid;
+        let price = cartItem.price;
+        let currentCartItems = this.cartItems;
+        currentCartItems.forEach(function(item) {
+            if(item.uuid === uuid) {
+                item.quantity++;
+            }
+        });
+        this.manageProductQuantity(currentCartItems);
+
+        store.commit('setAllCartItems', currentCartItems);
+        store.commit('setCurrentCartItemCount', this.cartItemCount + 1);
+        store.commit('addToCurrentTotalPrice', price);
+    },
+
+    decrease: function(cartItem) {
+        let uuid = cartItem.uuid;
+        let price = cartItem.price;
+        let currentCartItems = this.cartItems;
+        currentCartItems.forEach(function(item, index) {
+            if(item.uuid === uuid) {
+                if (item.quantity == 1) {
+                    currentCartItems.splice(index, 1);
+                } else {
+                    item.quantity--;    
+                }
+            }
+        });
+        this.manageProductQuantity(currentCartItems);        
+
+        store.commit('setAllCartItems', currentCartItems);
+        store.commit('setCurrentCartItemCount', this.cartItemCount - 1);
+        store.commit('removeFromCurrentTotalPrice', price);
     }
-    
   },
 
   mounted() {
-    $('.dropdown-trigger').dropdown({});
+    $('.dropdown-trigger').dropdown({
+        closeOnClick: false,
+        coverTrigger: false,
+        inDuration: 0,
+        outDuration: 0
+    });
   },
 
   created: function () {
@@ -76,7 +127,7 @@ export default {
         .then(response => response.json())
         .then(data => {
             store.commit('setAllCartItems', data.cartData);
-            store.commit('setCurrentCartItemCount', data.cartData.length);
+            store.commit('setCurrentCartItemCount', data.totalQuantity);
             store.commit('setCurrentTotalPrice', data.totalPrice);
         });
     }

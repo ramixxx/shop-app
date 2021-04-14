@@ -29,6 +29,9 @@ const store = new Vuex.Store({
 		addToCurrentTotalPrice(state, priceToAdd) {
 			state.totalPrice += Number(priceToAdd);
 		},
+		removeFromCurrentTotalPrice(state, priceToAdd) {
+			state.totalPrice -= Number(priceToAdd);
+		},
 		RESET_MODULE (state) {
 		  	Vue.set(state, "cartItemCount", 0);
 		  	Vue.set(state, "cartItems", []);
