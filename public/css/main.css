@@ -50,10 +50,6 @@
 	margin-left:20px;
 }
 
-.cart-item-badge {
-	min-width:0px !important;
-}
-
 .card-image {
 	white-space: nowrap;
     min-height:50%;
@@ -102,4 +98,17 @@ ul.dropdown-content {
 	font-size: 15px;
 	border-bottom:1px solid rgba(0,0,0,0.12);
 	margin:0px;
+}
+
+.sidenav {
+    transform: translateX(0%) !important;
+    margin-top:64px;
+}
+
+.shopping-cart-icon {
+	float:left;
+}
+
+.cart-item-badge {
+	min-width: 0px !important;
 }
