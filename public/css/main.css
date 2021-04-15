@@ -77,6 +77,15 @@ ul.dropdown-content {
   }
 }
 
+.dropdown-content-menu {
+	left:300px !important;
+	overflow: visible;
+}
+
+.dropdown-content-iphone {
+	left:117px !important;
+}
+
 .product-image-cart {
 	width:60px;
 }
@@ -103,6 +112,7 @@ ul.dropdown-content {
 .sidenav {
     transform: translateX(0%) !important;
     margin-top:64px;
+    overflow: visible;
 }
 
 .shopping-cart-icon {
@@ -115,4 +125,18 @@ ul.dropdown-content {
 
 .counter-div {
 	border:1px solid black;
+}
+
+.divider {
+	margin:0px !important;
+}
+
+.cart-actions {
+	text-align:center;
+}
+
+.sidenav li>a {
+	height: auto !important;
+	white-space: nowrap;
+	border: none !important;
 }

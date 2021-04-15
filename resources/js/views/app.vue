@@ -1,9 +1,10 @@
 <template>
   <div>
+      <Sidebar />
       <Navbar />
       <div class="row">
           <div class="col s12 m4 l2"><p>s12 m4</p></div>
-          <div class="col s12 m4 l8 center-align">
+          <div class="col s12 m4 l8 center-align" id="mid-view">
               <div class="row" v-for="rowIdx in Math.ceil(allproducts.length / 4)">
                   <div class="col s12 m6 l3" v-for="product in allproducts.slice(4 * (rowIdx - 1), 4 * rowIdx)">
                       <div class="card large">
@@ -33,11 +34,13 @@
 import { mapState } from 'vuex';
 import axios from "axios";
 import Navbar from './navbar.vue';
+import Sidebar from './sidebar.vue';
 import store from '../store/index.js';
 
 export default {
     components: {
-      Navbar
+      Navbar,
+      Sidebar
     },
     props: [
       'allproducts'

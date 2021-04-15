@@ -30,8 +30,10 @@
                     </tr>
                 </table>
                 <p class="total-price"> Total : {{ totalPrice }} </p>
-                <a class="waves-effect waves-light btn-small buy-button">Checkout</a>
-                <a class="waves-effect waves-light btn-small add-to-cart-button" v-on:click="clearCart">Clear all</a>
+                <div class="cart-actions">
+                    <a class="waves-effect waves-light btn-small buy-button">Checkout</a>
+                    <a class="waves-effect waves-light btn-small add-to-cart-button" v-on:click="clearCart">Clear all</a>
+                </div>
             </div>
         </ul>
     </div>
@@ -112,9 +114,7 @@ export default {
   mounted() {
     $('.dropdown-trigger').dropdown({
         closeOnClick: false,
-        coverTrigger: false,
-        inDuration: 0,
-        outDuration: 0
+        coverTrigger: false
     });
   },
 

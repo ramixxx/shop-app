@@ -14,7 +14,6 @@
         
     </head>
     <body class="antialiased">
-        @include('sidebar')
         <div id="app">
             <app :allProducts='{{ json_encode($allProducts) }}'></app>
         </div>
