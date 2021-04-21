@@ -15,7 +15,7 @@
     </head>
     <body class="antialiased">
         <div id="app">
-            <app :allProducts='{{ json_encode($allProducts) }}'></app>
+            <app :startproducts='{{ json_encode($allProducts) }}'></app>
         </div>
         <script src="{{ mix('js/app.js') }}"></script>
     </body>
@@ -23,6 +23,9 @@
 
 <script>
     $( document ).ready(function() {
-        $('.sidenav').sidenav();
+        $('.sidenav-left').sidenav();
+        $('.sidenav-right').sidenav({
+            edge: 'right'
+        });
     });
 </script>

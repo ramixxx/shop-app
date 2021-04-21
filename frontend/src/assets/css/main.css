@@ -113,6 +113,7 @@ ul.dropdown-content {
     transform: translateX(0%) !important;
     margin-top:64px;
     overflow: visible;
+    z-index: -1 !important;
 }
 
 .shopping-cart-icon {
@@ -185,4 +186,8 @@ nav form {
 	height: 35px !important;
     line-height: 35px !important;
     vertical-align: middle !important;
+}
+
+.sidebar-content-margin {
+	margin-top:64px !important;
 }

@@ -1,12 +1,13 @@
 <template>
   <div>
-      <Sidebar />
-      <Navbar />
+      <LeftSidebar />
+      <Navbar @populateCurrentProducts="populateCurrentProducts"/>
+      <div>
       <div class="row">
           <div class="col s12 m4 l2"><p>s12 m4</p></div>
           <div class="col s12 m4 l8 center-align" id="mid-view">
-              <div class="row" v-for="rowIdx in Math.ceil(allproducts.length / 4)">
-                  <div class="col s12 m6 l3" v-for="product in allproducts.slice(4 * (rowIdx - 1), 4 * rowIdx)">
+              <div class="row" v-for="rowIdx in Math.ceil(startproducts.length / 4)">
+                  <div class="col s12 m6 l3" v-for="product in startproducts.slice(4 * (rowIdx - 1), 4 * rowIdx)">
                       <div class="card large">
                           <div class="card-image">
                               <span class="helper"></span>
@@ -28,26 +29,31 @@
           </div>
           <div class="col s12 m4 l2"><p>s12 m4</p></div>
       </div>
+      </div>
+      <RightSidebar />
   </div>
 </template>
 <script>
 import { mapState } from 'vuex';
 import axios from "axios";
 import Navbar from './navbar.vue';
-import Sidebar from './sidebar.vue';
-import store from '../store/index.js';
+import LeftSidebar from './left-sidebar.vue';
+import RightSidebar from './right-sidebar.vue';
+import cartStore from '../store/index.js';
 
 export default {
     components: {
       Navbar,
-      Sidebar
+      LeftSidebar,
+      RightSidebar
     },
-    props: [
-      'allproducts'
-    ],
+    data: function () {
+      return {
+        startproducts
+      }
+    },
     computed: {
         ...mapState({
-            cartItemCount: state => state.cartItemCount,
             cartItems: state => state.cartItems,
             totalPrice: state => state.totalPrice
         })
@@ -55,9 +61,9 @@ export default {
     methods: {
         addToCartPost: function(product) {
             product['quantity'] = 1;
-            store.commit('INCREMENT');
-            store.commit('addToCurrentTotalPrice', product.price);
-            store.commit('addItemToCart', product);
+            cartStore.commit('INCREMENT');
+            cartStore.commit('addToCurrentTotalPrice', product.price);
+            cartStore.commit('addItemToCart', product);
             
             const requestOptions = {
               method: "POST",
@@ -79,9 +85,9 @@ export default {
                 for (i = 0; i < currentCartItems.length; i++) {
                     if(currentCartItems[i].uuid === uuid) {
                         currentCartItems[i].quantity++;
-                        store.commit('INCREMENT');
-                        store.commit('addToCurrentTotalPrice', product.price);
-                        store.commit('setAllCartItems', currentCartItems);
+                        cartStore.commit('INCREMENT');
+                        cartStore.commit('addToCurrentTotalPrice', product.price);
+                        cartStore.commit('setAllCartItems', currentCartItems);
                         break;
                     } else {
                         this.addToCartPost(product);
@@ -89,6 +95,10 @@ export default {
                     }
                 } 
             }
+        },
+
+        populateCurrentProducts: function(newProducts) {
+            this.startproducts = newProducts;
         }
     }
 };

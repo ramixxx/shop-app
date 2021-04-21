@@ -22,7 +22,7 @@ class CartController extends Controller
     }
 
     public function getCartProducts(Request $request) {
-    	$cartItems = Cart::join('products', 'carts.uuid', '=', 'products.uuid')->where('session_id', $request->session()->get('_token'))
+    	$cartItems = Cart::join('products', 'carts.uuid', '=', 'products.uuid')
                ->get(['products.*', 'carts.quantity']);
 
         $totalPrice = $cartItems->sum('price');

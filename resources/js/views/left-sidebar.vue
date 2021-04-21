@@ -1,6 +1,6 @@
 <template>
     <div>
-        <ul id="slide-out" class="sidenav">
+        <ul id="slide-out-left" class="sidenav sidenav-left">
             <li><a href="#" class="dropdown-trigger8" data-target="dropdown-electronics1"><i class="material-icons">computer</i>Computers</a></li>
             <li><div class="divider"></div></li>
             <li><a href="#" class="dropdown-trigger9" data-target="dropdown-electronics2"><i class="material-icons">phone_iphone</i>Phones</a></li>
@@ -68,14 +68,6 @@ export default {
             closeOnClick: false,
             hover: true
         });
-
-        window.onscroll = function (e) {
-            if (window.scrollY > 64) {
-                $('#slide-out').css('margin-top', 0);
-            } else {
-                $('#slide-out').css('margin-top', 64 - window.scrollY);
-            }
-        };
     }
 };
 </script>

@@ -9,6 +9,9 @@ class Product extends Model
 {
     use HasFactory;
 
+    const ELASTIC_INDEX = 'products';
+    const ELASTIC_TYPE  = 'product';
+
     /**
      * The attributes that are mass assignable.
      *

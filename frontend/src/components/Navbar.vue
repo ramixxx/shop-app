@@ -9,8 +9,9 @@
                 <ul id="nav-mobile" class="right hide-on-med-and-down">
                     <li>
                         <a href="#" class="dropdown-trigger" data-target="dropdown1">
-                            <span class="new badge cart-item-badge" v-if="cartItemCount > 0" data-badge-caption="">{{ cartItemCount }}</span>
-                            <i class="large material-icons shopping-cart-icon">shopping_cart</i>
+                            <font-awesome-icon icon="shopping-cart" size="lg"/>
+                            <span class="new badge cart-item-badge" v-if="cartItemCountVuex > 0" data-badge-caption="">{{ cartItemCountVuex }}</span>
+                            
                             
                         </a>
                     </li>
@@ -19,10 +20,10 @@
         </nav>
 
         <ul id='dropdown1' class='dropdown-content'>
-            <div v-if="cartItems.length > 0">
+            <div v-if="cartItemsVuex.length > 0">
                 <table class="cart-table">
-                    <tr v-for="cartItem in cartItems">
-                        <td><img :src="cartItem.image_path" class="product-image-cart"></td>
+                    <tr v-for="(cartItem,index) in cartItemsVuex" v-bind:key="index">
+                        <td><img :src="getImgUrl(cartItem.image_path)" class="product-image-cart"></td>
                         <td>{{ cartItem.name }}</td>
                         <td>{{ cartItem.price }}</td>
                         <td>
@@ -32,7 +33,7 @@
                         </td>
                     </tr>
                 </table>
-                <p class="total-price"> Total : {{ totalPrice }} </p>
+                <p class="total-price"> Total : {{ totalPriceVuex }} </p>
                 <div class="cart-actions">
                     <a class="waves-effect waves-light btn-small buy-button">Checkout</a>
                     <a class="waves-effect waves-light btn-small add-to-cart-button" v-on:click="clearCart">Clear all</a>
@@ -42,9 +43,12 @@
     </div>
 </template>
 <script>
-import { mapState } from 'vuex';
-import cartStore from '../store/index.js';
-import productStore from '../store/products.js';
+
+import cartStore from '../store/modules/cart.js';
+import axios from 'axios'
+import 'materialize-css';
+import 'materialize-css/dist/css/materialize.css'
+import M from 'materialize-css/dist/js/materialize.min.js'
 
 const searchUrl = '/search';
 
@@ -53,11 +57,15 @@ export default {
 
   },
   computed: {
-    ...mapState({
-        cartItemCount: state => state.cartItemCount,
-        cartItems: state => state.cartItems,
-        totalPrice: state => state.totalPrice
-    })
+        cartItemCountVuex () {
+            return cartStore.state.cartItemCount
+        },
+        cartItemsVuex () {
+            return cartStore.state.cartItems
+        },
+        totalPriceVuex () {
+            return cartStore.state.totalPrice
+        }
   },
   props: [
     
@@ -68,6 +76,9 @@ export default {
     }
   },
   methods: {
+    getImgUrl: function (imagePath) {
+        return require('@/assets' + imagePath);
+    },
     checkForm: function (e) {
       e.preventDefault();
 
@@ -90,18 +101,19 @@ export default {
     },
 
     clearCart: function() {
-        const requestOptions = {
-            method: "GET",
-            headers: { "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
-        };
-        fetch("/clearCartProducts", requestOptions).then(cartStore.commit('RESET_MODULE'))       
+        axios.get('http://127.0.0.1:8000/api/clearCartProducts')
+        .then((response) => {
+            cartStore.commit('RESET_MODULE')
+        }, (error) => {
+            console.log(error);
+        });       
     },
 
     manageProductQuantity: function(currentCartItems) {
         const requestOptions = {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ products: JSON.stringify(currentCartItems), "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
+            body: JSON.stringify({ products: JSON.stringify(currentCartItems)})
         };
         fetch("/manageProductQuantity", requestOptions)
             .then(response => console.log(response));
@@ -110,7 +122,7 @@ export default {
     increase: function(cartItem) {
         let uuid = cartItem.uuid;
         let price = cartItem.price;
-        let currentCartItems = this.cartItems;
+        let currentCartItems = this.cartItemsVuex;
         currentCartItems.forEach(function(item) {
             if(item.uuid === uuid) {
                 item.quantity++;
@@ -119,14 +131,14 @@ export default {
         this.manageProductQuantity(currentCartItems);
 
         cartStore.commit('setAllCartItems', currentCartItems);
-        cartStore.commit('setCurrentCartItemCount', this.cartItemCount + 1);
+        cartStore.commit('setCurrentCartItemCount', this.cartItemCountVuex + 1);
         cartStore.commit('addToCurrentTotalPrice', price);
     },
 
     decrease: function(cartItem) {
         let uuid = cartItem.uuid;
         let price = cartItem.price;
-        let currentCartItems = this.cartItems;
+        let currentCartItems = this.cartItemsVuex;
         currentCartItems.forEach(function(item, index) {
             if(item.uuid === uuid) {
                 if (item.quantity == 1) {
@@ -139,29 +151,31 @@ export default {
         this.manageProductQuantity(currentCartItems);        
 
         cartStore.commit('setAllCartItems', currentCartItems);
-        cartStore.commit('setCurrentCartItemCount', this.cartItemCount - 1);
+        cartStore.commit('setCurrentCartItemCount', this.cartItemCountVuex- 1);
         cartStore.commit('removeFromCurrentTotalPrice', price);
     }
   },
 
   mounted() {
-    $('.dropdown-trigger').dropdown({
+    const options = {
         closeOnClick: false,
         coverTrigger: false
+    };
+    document.addEventListener('DOMContentLoaded', function() {
+        var elems = document.querySelectorAll('.dropdown-trigger');
+        M.Dropdown.init(elems, options);
     });
   },
 
   created: function () {
-    const requestOptions = {
-        method: "GET",
-        headers: { "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') }
-    };
-    fetch("/getCartProducts", requestOptions)
-        .then(response => response.json())
-        .then(data => {
-            cartStore.commit('setAllCartItems', data.cartData);
-            cartStore.commit('setCurrentCartItemCount', data.totalQuantity);
-            cartStore.commit('setCurrentTotalPrice', data.totalPrice);
+        axios.get('http://127.0.0.1:8000/api/getCartProducts')
+        .then((response) => {
+            console.log(response);
+            cartStore.commit('setAllCartItems', response.data.cartData);
+            cartStore.commit('setCurrentCartItemCount', response.data.totalQuantity);
+            cartStore.commit('setCurrentTotalPrice', response.data.totalPrice);
+        }, (error) => {
+            console.log(error);
         });
     }
 };
