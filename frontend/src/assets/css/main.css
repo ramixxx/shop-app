@@ -191,3 +191,11 @@ nav form {
 .sidebar-content-margin {
 	margin-top:64px !important;
 }
+
+.login-form {
+	padding:40px;
+}
+
+label {
+	font-size: 1.0rem !important;
+}

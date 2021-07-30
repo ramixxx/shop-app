@@ -51,10 +51,10 @@ export default {
     computed: {
         currentProductsVuex () {
           return productStore.state.currentProducts
-        }
+        },
         // ...mapState({
-        //     // cartItems: state => state.cartItems,
-        //     // totalPrice: state => state.totalPrice,
+        //     cartItems: state => state.cartItems,
+        //     totalPrice: state => state.totalPrice,
         //     currentProducts: state => state.currentProducts
         // })
     },
@@ -71,15 +71,15 @@ export default {
             const requestOptions = {
               method: "POST",
               headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ product: JSON.stringify(product), "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
+              body: JSON.stringify({ product: JSON.stringify(product) })
             };
-            fetch("/addProductToCart", requestOptions)
+            fetch("http://127.0.0.1:8000/api/addProductToCart", requestOptions)
               .then(response => console.log(response));
         },
 
         addToCart: function (product) {
             let uuid = product.uuid;
-            let currentCartItems = this.cartItems;
+            let currentCartItems = this.currentProductsVuex;
 
             var i;
             if (currentCartItems.length == 0) {

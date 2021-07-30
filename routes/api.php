@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,16 +18,25 @@ use App\Http\Controllers\CartController;
 |
 */
 
+// Route::get('{any}', function () {
+//     return view('app');
+// })->where('any', '.*');
+
+Route::post('/login', [UserController::class, 'login']);
+Route::post('/register', [UserController::class, 'register']);
+Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
+
 Route::get('/', [ProductController::class, 'getAllProducts']);
 
 Route::post('/addProductToCart', [CartController::class, 'addProductToCart']);
 
-Route::get('/getCartProducts', [CartController::class, 'getCartProducts']);
+Route::get('/getCartProducts', [CartController::class, 'getCartProducts'])->middleware('web');
 
 Route::get('/clearCartProducts', [CartController::class, 'clearCartProducts']);
 
 Route::post('/manageProductQuantity', [CartController::class, 'manageProductQuantity']);
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+

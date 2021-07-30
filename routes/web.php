@@ -14,14 +14,6 @@ use App\Http\Controllers\CartController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-
-Route::post('/search', [ProductController::class, 'search']);
-
-Route::post('/addProductToCart', [CartController::class, 'addProductToCart']);
-
-Route::get('/getCartProducts', [CartController::class, 'getCartProducts']);
-
-Route::get('/clearCartProducts', [CartController::class, 'clearCartProducts']);
-
-Route::post('/manageProductQuantity', [CartController::class, 'manageProductQuantity']);
+Route::get('{any}', function () {
+    return view('app');
+})->where('any', '.*');

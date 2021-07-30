@@ -15,11 +15,16 @@ const store = new Vuex.Store({
 			state.cartItemCount++
 		},
 		addItemToCart(state, product) {
+			console.log("ADDED PRODUCT", product);
 			state.cartItems.push(product);
 		},
 		setAllCartItems(state, products) {
-			console.log(products);
-			Vue.set(state, 'cartItems', products);
+			console.log("PRODUCTS FROM BACKEND", products);
+			if (products == null) {
+				Vue.set(state, 'cartItems', new Array());
+			} else {
+				Vue.set(state, 'cartItems', products);
+			}
 		},
 		setCurrentCartItemCount(state, count) {
 			state.cartItemCount = count;

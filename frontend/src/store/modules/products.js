@@ -16,7 +16,7 @@ const store = new Vuex.Store({
 	},
 	actions: {
 		populateProducts(context) {
-			axios.get('http://127.0.0.1:8000/api')
+			axios.get('http://localhost:8000/api')
 			.then((response) => {
 				context.commit('populateProducts', response.data);
 			}, (error) => {
