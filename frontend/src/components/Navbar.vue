@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div v-else>
-                WTF
+                No products in cart!
             </div>
         </ul>
     </div>
@@ -141,7 +141,6 @@ import axios from 'axios'
 import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
 import M from 'materialize-css/dist/js/materialize.min.js'
-import Cookies from 'js-cookie'
 
 const searchUrl = '/search';
 
@@ -194,20 +193,29 @@ export default {
                         this.isLogin = true;
                         this.loggedInUser = '';
                         this.isLoggedIn = false;
-setTimeout(function(){ 
-    const options = {
-            closeOnClick: false,
-            coverTrigger: false,
-            autoTrigger: false
-        };
+                        setTimeout(function(){ 
+                            const options = {
+                                closeOnClick: false,
+                                coverTrigger: false,
+                                autoTrigger: false
+                            };
 
-            var elems = document.querySelectorAll('.dropdown-trigger1');
-            M.Dropdown.init(elems, options);
-            var elems2 = document.querySelectorAll('.dropdown-trigger2');
-            M.Dropdown.init(elems2, options);
+                            var elems = document.querySelectorAll('.dropdown-trigger1');
+                            M.Dropdown.init(elems, options);
+                            var elems2 = document.querySelectorAll('.dropdown-trigger2');
+                            M.Dropdown.init(elems2, options);
 
-}, 1000);
-                        
+                        }, 1000);
+                        axios.get('http://localhost:8000/api/getCartProducts')
+                        .then((response) => {
+                            console.log(response);
+                            cartStore.commit('setAllCartItems', response.data.cartData);
+                            cartStore.commit('setCurrentCartItemCount', response.data.totalQuantity);
+                            cartStore.commit('setCurrentTotalPrice', response.data.totalPrice);
+                        }, (error) => {
+                            console.log(error);
+                        });
+
                     } else {
                         console.log(response)
                     }
@@ -221,6 +229,10 @@ setTimeout(function(){
     handleLogin(e) {
         e.preventDefault()
         if (this.password.length > 0) {
+
+                                    axios.get('http://localhost:8000/sanctum/csrf-cookie').then(response => {
+    console.log(response);
+
                 axios.post('http://localhost:8000/api/login', {
                     email: this.email,
                     password: this.password
@@ -230,7 +242,6 @@ setTimeout(function(){
                         if (response.data) {
                             axios.get('http://localhost:8000/api/user').then((response) => {
                                 
-                                Cookies.set("X-XSRF-TOKEN", Cookies.get("XSRF-TOKEN"))
                                 if(response.data.name) {
                                     this.isLoggedIn = true;
                                     this.loggedInUser = response.data.name;
@@ -258,6 +269,7 @@ setTimeout(function(){
                     .catch(function (error) {
                         console.error(error);
                     });
+            });
         }
     },
     handleRegisterAccount(e) {
@@ -317,13 +329,10 @@ setTimeout(function(){
     },
 
     manageProductQuantity: function(currentCartItems) {
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ products: JSON.stringify(currentCartItems)})
-        };
-        fetch("/manageProductQuantity", requestOptions)
-            .then(response => console.log(response));
+        axios.post("http://localhost:8000/api/manageProductQuantity", {
+            products : JSON.stringify(currentCartItems)
+        })
+        .then(response => console.log(response));
     },
 
     increase: function(cartItem) {

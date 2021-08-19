@@ -8,11 +8,12 @@ import { library } from '@fortawesome/fontawesome-svg-core'
 import { faShoppingCart, faLaptop, faMobileAlt, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import axios from 'axios'
+import 'material-icons/iconfont/material-icons.css';
 
 axios.defaults.withCredentials = true;
-axios.get('http://localhost:8000/sanctum/csrf-cookie').then(response => {
-    console.log(response);
-});
+// axios.get('http://localhost:8000/sanctum/csrf-cookie').then(response => {
+//     console.log(response);
+// });
 
 library.add(faShoppingCart)
 library.add(faLaptop)
@@ -20,6 +21,7 @@ library.add(faMobileAlt)
 library.add(faSignInAlt)
 library.add(faSignOutAlt)
 
+Vue.component('V-MaterialIcon', require('vue-materials-icon/MaterialIcon').default);
 Vue.component('font-awesome-icon', FontAwesomeIcon)
 
 new Vue({

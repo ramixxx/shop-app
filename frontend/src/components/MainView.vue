@@ -26,6 +26,15 @@
                     </div>
                 </div>
             </div>
+            <ul class="pagination">
+                <li class="disabled"><a href="#!"><i class="material-icons">chevron_left</i></a></li>
+                <li class="active"><a href="#!">1</a></li>
+                <li class="waves-effect"><a href="#!">2</a></li>
+                <li class="waves-effect"><a href="#!">3</a></li>
+                <li class="waves-effect"><a href="#!">4</a></li>
+                <li class="waves-effect"><a href="#!">5</a></li>
+                <li class="waves-effect"><a href="#!"><i class="material-icons">chevron_right</i></a></li>
+            </ul>
         </div>
         <div class="col s12 m4 l2"><RightSidebar /></div>
     </div>
@@ -40,6 +49,7 @@ import LeftSidebar from './LeftSidebar.vue';
 import RightSidebar from './RightSidebar.vue';
 import cartStore from '../store/modules/cart.js';
 import productStore from '../store/modules/products.js';
+import axios from 'axios'
 
 export default {
     name: 'MainView',
@@ -67,14 +77,15 @@ export default {
             cartStore.commit('INCREMENT');
             cartStore.commit('addToCurrentTotalPrice', product.price);
             cartStore.commit('addItemToCart', product);
-            
-            const requestOptions = {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ product: JSON.stringify(product) })
-            };
-            fetch("http://127.0.0.1:8000/api/addProductToCart", requestOptions)
-              .then(response => console.log(response));
+
+            axios.post('http://localhost:8000/api/addProductToCart', {
+                product : product
+            })
+            .then((response) => {
+                console.log(response);
+            }, (error) => {
+                console.log(error);
+            });
         },
 
         addToCart: function (product) {

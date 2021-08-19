@@ -26,15 +26,15 @@ Route::post('/login', [UserController::class, 'login']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
-Route::get('/', [ProductController::class, 'getAllProducts']);
+Route::get('/getAllProducts', [ProductController::class, 'getAllProducts']);
 
-Route::post('/addProductToCart', [CartController::class, 'addProductToCart']);
+Route::post('/addProductToCart', [CartController::class, 'addProductToCart'])->middleware('auth:sanctum');
 
-Route::get('/getCartProducts', [CartController::class, 'getCartProducts'])->middleware('web');
+Route::get('/getCartProducts', [CartController::class, 'getCartProducts'])->middleware('auth:sanctum');
 
-Route::get('/clearCartProducts', [CartController::class, 'clearCartProducts']);
+Route::get('/clearCartProducts', [CartController::class, 'clearCartProducts'])->middleware('auth:sanctum');
 
-Route::post('/manageProductQuantity', [CartController::class, 'manageProductQuantity']);
+Route::post('/manageProductQuantity', [CartController::class, 'manageProductQuantity'])->middleware('auth:sanctum');
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

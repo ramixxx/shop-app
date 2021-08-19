@@ -3,7 +3,7 @@
         <ul id="slide-out-left" class="sidenav sidenav-left">
             <div class="sidebar-content-margin">
                 <li>
-                    TESTddd
+                    Here will be filters
                 </li>
             </div>
         </ul>

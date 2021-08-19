@@ -49,7 +49,7 @@ class UserController extends Controller
         ];
 
         if (Auth::attempt($credentials)) {
-        	$request->session()->regenerate();
+        	
             // $user = Auth::user();
             // return $user;
             $success = true;
@@ -70,10 +70,12 @@ class UserController extends Controller
     /**
      * Logout
      */
-    public function logout()
+    public function logout(Request $request)
     {
         try {
+        	
             Session::flush();
+            $request->session()->regenerate();
             $success = true;
             $message = 'Successfully logged out';
         } catch (\Illuminate\Database\QueryException $ex) {

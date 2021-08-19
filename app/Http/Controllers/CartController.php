@@ -9,66 +9,65 @@ use Illuminate\Support\Facades\Session;
 
 class CartController extends Controller
 {
-    public function addProductToCart222(Request $request) {
-    	$data = $request->all();
-    	$product = json_decode($data['product']);
-
-    	$cart = new Cart;
-    	$cart->uuid = $product->uuid;
-    	$cart->session_id = $request->session()->get('_token');
-    	$cart->quantity = $product->quantity;
-        $cart->save();
-
-    	return "Product saved successfully!";
+    public function __construct(Request $request) {
+        $this->request = $request;
     }
 
-    public function addProductToCart(Request $request) {
-        $data = $request->all();
-        $product = json_decode($data['product']);
-        session()->push('products', $product);
-
-        return session()->get('products');
+    public function currentUserId() {
+        return $this->request->user()->id;
     }
 
-    public function getCartProducts(Request $request) {
-    	$session_id = Session::getId();
-        print_r($session_id);
-        // $cartItems = Cart::join('products', 'carts.uuid', '=', 'products.uuid')
-     //           ->get(['products.*', 'carts.quantity']);
+    public function addProductToCart() {
+        $data = $this->request->all();
 
-     //    $totalPrice = $cartItems->sum('price');
-     //    $totalQuantity = $cartItems->sum('quantity');
+        $product[] = [
+            'uuid' => $data['product']['uuid'],
+            'user_id' => $this->currentUserId(),
+            'created_at' => $data['product']['created_at'],
+            'updated_at' => $data['product']['updated_at'],
+            'quantity' => $data['product']['quantity']
+        ];
 
-     //    return response()->json([
-     //        'cartData' => $cartItems,
-     //        'totalPrice' => $totalPrice,
-     //        'totalQuantity' => $totalQuantity
-     //    ]);
+        Cart::insert($product);
+
+        return "Product saved successfully!";
     }
 
-    public function clearCartProducts(Request $request) {
-        $data = $request->session()->all();
+    public function getCartProducts() {
+        $cartItems = Cart::where('user_id', $this->currentUserId())
+                ->join('products', 'carts.uuid', '=', 'products.uuid')
+                ->get(['products.*', 'carts.quantity']);
 
-    	Cart::where('session_id', $request->session()->get('_token'))->delete();
+        $totalPrice = $cartItems->sum('price');
+        $totalQuantity = $cartItems->sum('quantity');
+
+        return response()->json([
+            'cartData' => $cartItems,
+            'totalPrice' => $totalPrice,
+            'totalQuantity' => $totalQuantity
+        ]);
+    }
+
+    public function clearCartProducts() {
+    	Cart::where('user_id', $this->currentUserId())->delete();
     	return "Cart deleted successfully!";
     }
 
-    public function manageProductQuantity(Request $request) {
-        $token = $request->session()->get('_token');
-        Cart::where('session_id', $token)->delete();
-        $data = $request->all();
+    public function manageProductQuantity() {
+        Cart::where('user_id', $this->currentUserId())->delete();
+        $data = $this->request->all();
         $products = json_decode($data['products']);
         if (!empty($products)) {
             foreach($products as $product) {
                 $productsFinal[] = [
                     'uuid' => $product->uuid,
-                    'session_id' => $token,
+                    'user_id' => $this->currentUserId(),
                     'quantity' => $product->quantity,
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
+                Cart::insert($productsFinal);
             }
-            Cart::insert($productsFinal);
         }
     }
 }
