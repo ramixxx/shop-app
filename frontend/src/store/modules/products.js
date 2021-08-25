@@ -6,16 +6,19 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
 	state: {
-		currentProducts: []
+		currentProducts: [],
+		productCount: null
 	},
 
 	mutations: {
 		populateProducts(state, products) {
 			state.currentProducts = products;
+			state.productCount = products.length;
 		}
 	},
 	actions: {
 		populateProducts(context) {
+			context.currentProducts = [];
 			axios.get('http://localhost:8000/api/getAllProducts')
 			.then((response) => {
 				context.commit('populateProducts', response.data);

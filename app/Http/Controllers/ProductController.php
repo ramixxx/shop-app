@@ -15,7 +15,7 @@ class ProductController extends Controller
         $this->client = ClientBuilder::create()->build();
     }
 
-    public function getAllProducts() {
+    public function getAllProducts(Request $request) {
   //   	$params = [
 		//     'index' => Product::ELASTIC_INDEX,
 		//     'id'    => Product::ELASTIC_TYPE
@@ -23,13 +23,15 @@ class ProductController extends Controller
 		// print_r($params);
 
 		// $source = $this->client->getSource($params);
-    	return Product::all();
+    	// return Product::all();
+
+    	return $this->search("*");
     }
 
-    public function search(Request $request) {
-	    if($request->has('q') && $request->input('q')) {
+    public function search($q) {
+	    // if($request->has('q') && $request->input('q')) {
 	        // Search for given text and return data
-	        $data = $this->searchProducts($request->input('q'));
+	        $data = $this->searchProducts($q);
 	        $productArray = [];
 
 	        if($data['hits']['total'] > 0) {
@@ -39,10 +41,30 @@ class ProductController extends Controller
 	        }
 
 	        return $productArray;
-	    } else {
+	    /*} else {
 	        return "No q!";
-	    }
+	    }*/
 	}
+
+	public function searchTerm(Request $request) {
+	    if($request->has('q') && $request->input('q')) {
+	        // Search for given text and return data
+	        $data = $this->searchProducts("*".$request->input('q')."*");
+	        
+	    } else {
+	        $data = $this->searchProducts("*");
+	    }
+	    $productArray = [];
+
+	        if($data['hits']['total'] > 0) {
+	            foreach ($data['hits']['hits'] as $hit) {
+	                $productArray[] = $hit['_source'];
+	            }
+	        }
+
+	        return $productArray;
+	}
+
 
 	private function searchProducts($text) {
 	    $params = [
@@ -53,23 +75,14 @@ class ProductController extends Controller
 	                '_score'
 	            ],
 	            'query' => [
-	               'bool' => [
-	                   'should' => [
-	                        ['match' => [
-	                            'name' => [
-	                               'query'     => $text,
-	                               'fuzziness' => '2'
-	                            ]
-	                        ]],
-	                        ['match' => [
-	                            'price' => [
-	                                'query'     => $text,
-	                                'fuzziness' => '1'
-	                            ]
-	                        ]]
-	                   ]
-	                ],
-	            ],
+
+	                'wildcard' => [
+	                    'name' => [
+	                        'value'     => $text
+	                    ]
+	                ]
+	            ]
+
 	         ]
 	    ];
 	    $data = $this->client->search($params);

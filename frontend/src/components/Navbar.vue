@@ -129,7 +129,7 @@
                 </div>
             </div>
             <div v-else>
-                No products in cart!
+                <h5>No products in cart!</h5>
             </div>
         </ul>
     </div>
@@ -137,12 +137,13 @@
 <script>
 
 import cartStore from '../store/modules/cart.js';
+import productStore from '../store/modules/products.js';
 import axios from 'axios'
 import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
 import M from 'materialize-css/dist/js/materialize.min.js'
 
-const searchUrl = '/search';
+const searchUrl = 'http://localhost:8000/api/search';
 
 export default {
   components: {
@@ -299,22 +300,12 @@ export default {
         return require('@/assets' + imagePath);
     },
     checkForm: function (e) {
-      e.preventDefault();
+        e.preventDefault();
+        productStore.state.currentProducts = [];
 
-        const requestOptions = {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ q: this.q, "_token": document.querySelector('meta[name="csrf-token"]').getAttribute('content') })
-        };
-
-        fetch(searchUrl, requestOptions)
-        .then(res => {
-            res.json().then(data => {
-                this.$emit('populateCurrentProducts', data)
-            })
-            .catch((error) => {
-              console.error('Error:', error);
-            });
+        axios.post(searchUrl + "?q=" + this.q)
+        .then(response => {
+            productStore.commit('populateProducts', response.data);
         });
       
     },

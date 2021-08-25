@@ -23,6 +23,7 @@ use Illuminate\Support\Facades\Auth;
 // })->where('any', '.*');
 
 Route::post('/login', [UserController::class, 'login']);
+Route::post('/search', [ProductController::class, 'searchTerm']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/logout', [UserController::class, 'logout'])->middleware('auth:sanctum');
 
