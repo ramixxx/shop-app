@@ -28,6 +28,37 @@ class ProductController extends Controller
     	return $this->search("*");
     }
 
+    public function searchType(Request $request) {
+    	if($request->has('q') && $request->input('q')) {
+    		$q = strtolower($request->input('q'));
+	    	$params = [
+		        'index' => Product::ELASTIC_INDEX,
+		        'type' => Product::ELASTIC_TYPE,
+		        'body' => [
+		            'sort' => [
+		                '_score'
+		            ],
+		            'query' => [
+                        'match' => [
+                        	'subtype' => $q
+                        ]
+		            ]
+
+		         ]
+		    ];
+		    $data = $this->client->search($params);
+		    $productArray = [];
+
+	        if($data['hits']['total'] > 0) {
+	            foreach ($data['hits']['hits'] as $hit) {
+	                $productArray[] = $hit['_source'];
+	            }
+	        }
+
+	        return $productArray;
+    	}
+    }
+
     public function search($q) {
 	    // if($request->has('q') && $request->input('q')) {
 	        // Search for given text and return data

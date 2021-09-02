@@ -56,6 +56,15 @@
     text-align: center; margin: 1em 0;
 }
 
+.card .card-image img {
+	height: 250px !important;
+	width: none !important;
+}
+
+.card.large {
+	height: none !important;
+}
+
 .helper {
 	display: inline-block;
     height: 100%;
@@ -111,9 +120,10 @@ ul.dropdown-content {
 
 .sidenav {
     transform: translateX(0%) !important;
-    margin-top:64px;
     overflow: visible;
-    z-index: -1 !important;
+    top: 64px !important;
+    overflow-y: unset !important;
+
 }
 
 .shopping-cart-icon {
@@ -140,6 +150,7 @@ ul.dropdown-content {
 	height: auto !important;
 	white-space: nowrap;
 	border: none !important;
+
 }
 
 .search-bar {
@@ -174,7 +185,7 @@ ul.dropdown-content {
 html, body {margin: 0 auto; 
 	position: relative;
   height: 100%;
- overflow: hidden}
+ overflow: visible}
 
 .center-search {
 	text-align:center;
@@ -198,7 +209,6 @@ nav form {
 }
 
 .sidebar-content-margin {
-	margin-top:64px !important;
 }
 
 .login-form {
@@ -207,4 +217,28 @@ nav form {
 
 label {
 	font-size: 1.0rem !important;
+}
+
+.list-opened {
+	position: absolute;
+  left: 300px;
+  float: right;
+  display: inline-block !important;
+  max-width: 500px;
+  max-height: 500px;
+  word-wrap: break-word;
+  background-color: white;
+  box-shadow: 0 2px 2px 0 rgb(0 0 0 / 14%), 0 3px 1px -2px rgb(0 0 0 / 12%), 0 1px 5px 0 rgb(0 0 0 / 20%);
+}
+
+.listItemComponent {
+	/*position: fixed;*/
+	/*position: relative;*/
+	/*display: flex;*/
+
+}
+
+.listItem {
+	display: inline-block !important;
+	width:  100% !important;
 }

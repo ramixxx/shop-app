@@ -1,23 +1,46 @@
 <template>
-    <div>
+
         <ul id="slide-out-left" class="sidenav sidenav-left">
             <div class="sidebar-content-margin">
-                <li>
-                    Here will be filters
+                <ListItem v-for="item in items" :key="item.id" :iconName=item.iconName :itemName=item.itemName :id=item.id :items=item.items />
+                <!-- <ListItem iconName="mobile-alt" itemName="Phones" id="list2" items=this.items /> -->
+                <!-- <li @mouseover="active = !active"><a href="#" class="dropdown-trigger8" data-target="dropdown-electronics1">
+                    <font-awesome-icon icon="laptop" size="lg"/>   Computers</a>
                 </li>
+                <div class="computers-opened" v-if="active">
+                    hello222
+                </div>
+                <li><div class="divider"></div></li>
+                <li><a href="#" class="dropdown-trigger9" data-target="dropdown-electronics2"><font-awesome-icon icon="mobile-alt" size="lg"/>  Phones</a></li>
+                <div class="phones-opened">
+
+                </div>
+                <li><div class="divider"></div></li> -->
             </div>
         </ul>
-    </div>
+
+
 </template>
 <script>
 
 import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
-import M from 'materialize-css/dist/js/materialize.min.js'
+import ListItem from './ListItem.vue';
 
 export default {
+    name: 'LeftSidebar',
+    data() {
+        return {
+            items: [
+                {id:1, iconName:"laptop", itemName:"Computers", items:[{id:1, name:"Desktops - AI Dev Boxes"}, {id:2, name:"Desktops - Gaming"},{id:3, name:"Desktops - Home/Office"}] },
+                {id:2, iconName:"mobile-alt", itemName:"Phones", items:[{id:1, name:"Apple"}, {id:2, name:"Android"}] },
+                {id:3, iconName:"microchip", itemName:"Components", items:[{id:1, name:"Motherboards"}, {id:2, name:"Cases"}, {id:3, name:"Graphics card"}, {id:4, name:"Memory - RAM"}, {id:5, name:"Coolers"}, {id:6, name:"Processors"}] }
+                
+            ]
+        }
+    },
     components: {
-
+        ListItem
     },
     
     computed: {
@@ -27,33 +50,13 @@ export default {
     
     ],
     methods: {
-
+        mouseOver: function(){
+            alert("EEE");
+            // this.active = !this.active;   
+        }
     },
     mounted() {
-        const sidenavOptions = {
-            edge: 'right'
-        };
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.sidenav-left');
-            M.Sidenav.init(elems, sidenavOptions);
-        });
-        // window.onscroll = function () {
-        //     if (window.scrollY > 64) {
-        //             let right = document.getElementById("slide-out-right");
-        //             let left = document.getElementById("slide-out-left");
-        //             right.style.marginTop = '0px';
-        //             left.style.marginTop = '0px';
-        // //         $('#slide-out-right').css('margin-top', 0);
-        // //         $('#slide-out-left').css('margin-top', 0);
-        //     } else {
-        //             let right = document.getElementById("slide-out-right");
-        //             let left = document.getElementById("slide-out-left");
-        //             right.style.marginTop = '64px' - window.scrollY;
-        //             left.style.marginTop = '64px' - window.scrollY;
-        // //         $('#slide-out-right').css('margin-top', 64 - window.scrollY);
-        // //         $('#slide-out-left').css('margin-top', 64 - window.scrollY);
-        //     }
-        // };
+
     }
 };
 </script>

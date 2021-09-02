@@ -1,41 +1,10 @@
 <template>
-    <div class="">
+    <div>
         <ul id="slide-out-right" class="sidenav sidenav-right">
             <div class="sidebar-content-margin">
-            <li><a href="#" class="dropdown-trigger8" data-target="dropdown-electronics1"><font-awesome-icon icon="laptop" size="lg"/>   Computers</a></li>
-            <li><div class="divider"></div></li>
-            <li><a href="#" class="dropdown-trigger9" data-target="dropdown-electronics2"><font-awesome-icon icon="mobile-alt" size="lg"/>  Phones</a></li>
-            <li><div class="divider"></div></li>
-            </div>
-        </ul>
-
-        <ul id='dropdown-electronics1' class='dropdown-content dropdown-content-menu'>
-            <div class="sidebar-content-margin">
-            <li><a href="#!">two</a></li>
-            <li class="divider" tabindex="-1"></li>
-            <li><a href="#!">three</a></li>
-            <li><a href="#!">four</a></li>
-            <li><a href="#!">five</a></li>
-            </div>
-        </ul>
-
-        <ul id='dropdown-electronics2' class='dropdown-content dropdown-content-menu'>
-            <div class="sidebar-content-margin">
-            <li><a href="#!">Android</a></li>
-            <li>
-                <a href="#" class="dropdown-trigger10" data-target="dropdown-electronics3">Iphone</a>
-            </li>
-            </div>
-        </ul>
-
-        <ul id='dropdown-electronics3' class='dropdown-content dropdown-content-iphone'>
-            <div class="sidebar-content-margin">
-            <li><a href="#!">X</a></li>
-            <li><a href="#!">S6</a></li>
-            <li><a href="#!">12 Pro</a></li>
-            <li><a href="#!">12</a></li>
-            <li><a href="#!">SE</a></li>
-            <li><a href="#!">11 Pro Max</a></li>
+                <li>
+                    Here will be filters
+                </li>
             </div>
         </ul>
     </div>
@@ -47,7 +16,6 @@ import 'materialize-css/dist/css/materialize.css'
 import M from 'materialize-css/dist/js/materialize.min.js'
 
 export default {
-    name: 'LeftSidebar',
     components: {
 
     },
@@ -62,29 +30,30 @@ export default {
 
     },
     mounted() {
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.sidenav-right');
-            M.Sidenav.init(elems);
-        });
-
-        const options = {
-            closeOnClick: false,
-            hover: true
+        const sidenavOptions = {
+            edge: 'right'
         };
         document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger8');
-            M.Dropdown.init(elems, options);
+            var elems = document.querySelectorAll('.sidenav-right');
+            M.Sidenav.init(elems, sidenavOptions);
         });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger9');
-            M.Dropdown.init(elems, options);
-        });
-
-        document.addEventListener('DOMContentLoaded', function() {
-            var elems = document.querySelectorAll('.dropdown-trigger10');
-            M.Dropdown.init(elems, options);
-        });
+        // window.onscroll = function () {
+        //     if (window.scrollY > 64) {
+        //             let right = document.getElementById("slide-out-right");
+        //             let left = document.getElementById("slide-out-left");
+        //             right.style.marginTop = '0px';
+        //             left.style.marginTop = '0px';
+        // //         $('#slide-out-right').css('margin-top', 0);
+        // //         $('#slide-out-left').css('margin-top', 0);
+        //     } else {
+        //             let right = document.getElementById("slide-out-right");
+        //             let left = document.getElementById("slide-out-left");
+        //             right.style.marginTop = '64px' - window.scrollY;
+        //             left.style.marginTop = '64px' - window.scrollY;
+        // //         $('#slide-out-right').css('margin-top', 64 - window.scrollY);
+        // //         $('#slide-out-left').css('margin-top', 64 - window.scrollY);
+        //     }
+        // };
     }
 };
 </script>

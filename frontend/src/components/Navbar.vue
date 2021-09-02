@@ -1,6 +1,6 @@
 <template>
     <div>
-        <nav>
+        <nav class="navbar">
             <div class="nav-wrapper">
                 <form id="app" @submit="checkForm" method="post">
                     <input type="text" v-model="q" placeholder="Search.." class="search-input">

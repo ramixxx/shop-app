@@ -5,7 +5,7 @@ import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
 import 'materialize-css/dist/js/materialize.min.js'
 import { library } from '@fortawesome/fontawesome-svg-core'
-import { faShoppingCart, faLaptop, faMobileAlt, faSignInAlt, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faShoppingCart, faLaptop, faMobileAlt, faSignInAlt, faSignOutAlt, faMicrochip } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import axios from 'axios'
 import 'material-icons/iconfont/material-icons.css';
@@ -15,6 +15,7 @@ axios.defaults.withCredentials = true;
 //     console.log(response);
 // });
 
+library.add(faMicrochip)
 library.add(faShoppingCart)
 library.add(faLaptop)
 library.add(faMobileAlt)
