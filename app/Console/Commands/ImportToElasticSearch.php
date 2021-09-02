@@ -131,7 +131,9 @@ class ImportToElasticSearch extends Command
                 'uuid'          => $product->uuid,
                 'name'          => $product->name,
                 'price'         => $product->price,
-                'image_path'    => $product->image_path
+                'image_path'    => $product->image_path,
+                'type'          => $product->type,
+                'subtype'       => $product->subtype
             ];
 
             $i++;
