@@ -301,11 +301,16 @@ export default {
     },
     checkForm: function (e) {
         e.preventDefault();
-        productStore.state.currentProducts = [];
+        productStore.commit('resultStatus', 'finding');
 
         axios.post(searchUrl + "?q=" + this.q)
         .then(response => {
-            productStore.commit('populateProducts', response.data);
+            if (response.data.length == 0) {
+                productStore.commit('resultStatus', 'nothing');
+            } else {
+                productStore.commit('resultStatus', 'result');
+                productStore.commit('populateProducts', response.data);
+            }
         });
       
     },

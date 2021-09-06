@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\SidebarController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -43,3 +44,4 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 // Left Sidebar
 Route::post('/searchType', [ProductController::class, 'searchType']);
+Route::get('/sidebarLinks', [SidebarController::class, 'allSidebarLinks']);

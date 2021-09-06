@@ -26,6 +26,7 @@
 import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
 import ListItem from './ListItem.vue';
+import axios from 'axios'
 
 export default {
     name: 'LeftSidebar',
@@ -56,7 +57,12 @@ export default {
         }
     },
     mounted() {
-
+        const searchUrl = 'http://localhost:8000/api/sidebarLinks';
+        axios.get(searchUrl)
+        .then(response => {
+            console.log(response.data);
+            
+        });
     }
 };
 </script>
