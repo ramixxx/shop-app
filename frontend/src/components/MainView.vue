@@ -6,7 +6,23 @@
     <div class="row">
         <div class="col s12 m4 l2"><LeftSidebar /></div>
         <div class="col s12 m4 l8 center-align" id="mid-view">
-            <div v-if="isLoaded">
+            <div v-if="resultStatus == 'finding'">
+                <div class="preloader-wrapper active">
+                    <div class="spinner-layer spinner-red-only">
+                      <div class="circle-clipper left">
+                        <div class="circle"></div>
+                      </div><div class="gap-patch">
+                        <div class="circle"></div>
+                      </div><div class="circle-clipper right">
+                        <div class="circle"></div>
+                      </div>
+                    </div>
+                </div>   
+            </div>
+            <div v-else-if="resultStatus == 'nothing'">
+                <p>Nothing found</p>
+            </div>
+            <div v-else>
                 <div class="row" v-for="(rowIdx, index) in Math.ceil(currentProductsVuex.length / 4)" v-bind:key="index">
                     <div class="col s12 m6 l3" v-for="(product, index) in currentProductsVuex.slice(4 * (rowIdx - 1), 4 * rowIdx)" v-bind:key="index">
                         <div class="card large">
@@ -28,19 +44,6 @@
                     </div>
                 </div>
             </div> 
-            <div v-else>
-                <div class="preloader-wrapper active">
-                    <div class="spinner-layer spinner-red-only">
-                      <div class="circle-clipper left">
-                        <div class="circle"></div>
-                      </div><div class="gap-patch">
-                        <div class="circle"></div>
-                      </div><div class="circle-clipper right">
-                        <div class="circle"></div>
-                      </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <div class="col s12 m4 l2"><RightSidebar /></div>
     </div>
@@ -69,11 +72,13 @@ export default {
           return productStore.state.currentProducts
         },
 
-        isLoaded() {
-            if (productStore.state.currentProducts.length == 0) {
-                return false;
+        resultStatus() {
+            if (productStore.state.resultStatus == 'finding') {
+                return 'finding';
+            } else if(productStore.state.resultStatus == 'nothing') {
+                return 'nothing';
             }
-            return true;
+            return 'result';
         }
         // ...mapState({
         //     cartItems: state => state.cartItems,

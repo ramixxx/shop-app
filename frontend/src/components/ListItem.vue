@@ -29,10 +29,17 @@ export default {
   methods:{
     searchType(type) {
         // productStore.state.currentProducts = [];
+        productStore.commit('resultStatus', 'finding');
         const searchUrl = 'http://localhost:8000/api/searchType';
         axios.post(searchUrl + "?q=" + type)
         .then(response => {
-            productStore.commit('populateProducts', response.data);
+            if (response.data.length == 0) {
+                productStore.commit('resultStatus', 'nothing');
+            } else {
+                productStore.commit('resultStatus', 'result');
+                productStore.commit('populateProducts', response.data);
+            }
+            
         });
     }
   },
