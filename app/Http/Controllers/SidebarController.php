@@ -12,10 +12,6 @@ class SidebarController extends Controller
      */
     public function allSidebarLinks()
     {
-        $links = Link::find(1)->item;
-        // var_dump($links);
-        foreach($links as $link) {
-            print_r($link->name);
-        }
+        return Link::with('sidebar_child_item')->get();
     }
 }

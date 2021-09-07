@@ -13,7 +13,7 @@ class Link extends Model
 
     ];
 
-    public function item() {
-        return $this->hasMany(Item::class);
+    public function sidebar_child_item() {
+        return $this->hasMany(SidebarChildItem::class);
     }
 }

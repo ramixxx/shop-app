@@ -4,7 +4,7 @@
     <li v-on:click="active = !active" class="listItem"><a href="#" >
       <font-awesome-icon :icon=iconName size="lg"/>   {{itemName}}</a>
     </li>
-    <div class="list-opened" v-if="active">
+    <div class="list-opened" id="list-opened" v-if="active">
         <div v-for="(item) in items" :key="item.id">
             <li v-on:click="searchType(item.name)"><a href="#"> {{item.name}}</a></li>
         </div>
@@ -45,7 +45,7 @@ export default {
   },
 
   mounted() {
-
+    
   }
 };
 </script>
