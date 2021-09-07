@@ -3,40 +3,34 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Cart;
-use App\Models\Product;
-use Illuminate\Support\Facades\Session;
+use App\Models\GuestCart;
 
-class CartController extends Controller
+class GuestCartController extends Controller
 {
     public function __construct(Request $request) {
         $this->request = $request;
     }
 
-    public function currentUserId() {
-        return $this->request->user()->id;
-    }
-
-    public function addProductToCart() {
+    public function addProductToGuestCart() {
         $data = $this->request->all();
 
         $product[] = [
             'uuid' => $data['product']['uuid'],
-            'user_id' => $this->currentUserId(),
+            'session_id' => \Session::getId(),
             'created_at' => now(),
             'updated_at' => now(),
             'quantity' => $data['product']['quantity']
         ];
 
-        Cart::insert($product);
+        GuestCart::insert($product);
 
         return "Product saved successfully!";
     }
 
-    public function getCartProducts() {
-        $cartItems = Cart::where('user_id', $this->currentUserId())
-                ->join('products', 'carts.uuid', '=', 'products.uuid')
-                ->get(['products.*', 'carts.quantity']);
+    public function getGuestCartProducts() {
+        $cartItems = GuestCart::where('session_id', \Session::getId())
+                ->join('products', 'guest_carts.uuid', '=', 'products.uuid')
+                ->get(['products.*', 'guest_carts.quantity']);
 
         $totalPrice = $cartItems->sum('price');
         $totalQuantity = $cartItems->sum('quantity');
@@ -48,25 +42,25 @@ class CartController extends Controller
         ]);
     }
 
-    public function clearCartProducts() {
-    	Cart::where('user_id', $this->currentUserId())->delete();
-    	return "Cart deleted successfully!";
+    public function clearGuestCartProducts() {
+        GuestCart::where('session_id', \Session::getId())->delete();
+        return "Cart deleted successfully!";
     }
 
-    public function manageProductQuantity() {
-        Cart::where('user_id', $this->currentUserId())->delete();
+    public function manageGuestCartProductQuantity() {
+        GuestCart::where('session_id', \Session::getId())->delete();
         $data = $this->request->all();
         $products = json_decode($data['products']);
         if (!empty($products)) {
             foreach($products as $product) {
                 $productsFinal[] = [
                     'uuid' => $product->uuid,
-                    'user_id' => $this->currentUserId(),
+                    'session_id' => \Session::getId(),
                     'quantity' => $product->quantity,
                     'created_at' => now(),
                     'updated_at' => now()
                 ];
-                Cart::insert($productsFinal);
+                GuestCart::insert($productsFinal);
             }
         }
     }

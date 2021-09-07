@@ -6,6 +6,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\SidebarController;
+use App\Http\Controllers\GuestCartController;
 use Illuminate\Support\Facades\Auth;
 
 /*
@@ -45,3 +46,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 // Left Sidebar
 Route::post('/searchType', [ProductController::class, 'searchType']);
 Route::get('/sidebarLinks', [SidebarController::class, 'allSidebarLinks']);
+
+
+// Guest Cart
+Route::post('/addProductToGuestCart', [GuestCartController::class, 'addProductToGuestCart']);
+Route::post('/manageGuestCartProductQuantity', [GuestCartController::class, 'manageGuestCartProductQuantity']);
+Route::get('/getGuestCartProducts', [GuestCartController::class, 'getGuestCartProducts']);
+Route::get('/clearGuestCartProducts', [GuestCartController::class, 'clearGuestCartProducts']);

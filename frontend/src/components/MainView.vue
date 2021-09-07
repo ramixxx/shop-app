@@ -58,6 +58,7 @@ import LeftSidebar from './LeftSidebar.vue';
 import RightSidebar from './RightSidebar.vue';
 import cartStore from '../store/modules/cart.js';
 import productStore from '../store/modules/products.js';
+import sessionStore from '../store/modules/session.js';
 import axios from 'axios'
 
 export default {
@@ -95,8 +96,14 @@ export default {
             cartStore.commit('INCREMENT');
             cartStore.commit('addToCurrentTotalPrice', product.price);
             cartStore.commit('addItemToCart', product);
-
-            axios.post('http://localhost:8000/api/addProductToCart', {
+            let isGuest = sessionStore.state.isGuest;
+            let url;
+            if (isGuest) {
+                url = 'http://localhost:8000/api/addProductToGuestCart';
+            } else {
+                url = 'http://localhost:8000/api/addProductToCart';
+            }
+            axios.post(url, {
                 product : product
             })
             .then((response) => {

@@ -5,13 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Cart extends Model
+class GuestCart extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-    	'id',
-    	'uuid',
-    	'session_id'
+        'id',
+        'uuid',
+        'session_id'
     ];
 }

@@ -138,6 +138,7 @@
 
 import cartStore from '../store/modules/cart.js';
 import productStore from '../store/modules/products.js';
+import sessionStore from '../store/modules/session.js';
 import axios from 'axios'
 import 'materialize-css';
 import 'materialize-css/dist/css/materialize.css'
@@ -316,7 +317,14 @@ export default {
     },
 
     clearCart: function() {
-        axios.get('http://localhost:8000/api/clearCartProducts')
+        let isGuest = sessionStore.state.isGuest;
+        let url;
+        if (isGuest) {
+            url = 'http://localhost:8000/api/clearGuestCartProducts';
+        } else {
+            url = 'http://localhost:8000/api/clearCartProducts';
+        }
+        axios.get(url)
         .then(() => {
             cartStore.commit('RESET_MODULE')
         }, (error) => {
@@ -325,7 +333,14 @@ export default {
     },
 
     manageProductQuantity: function(currentCartItems) {
-        axios.post("http://localhost:8000/api/manageProductQuantity", {
+        let isGuest = sessionStore.state.isGuest;
+        let url;
+        if (isGuest) {
+            url = 'http://localhost:8000/api/manageGuestCartProductQuantity';
+        } else {
+            url = 'http://localhost:8000/api/manageProductQuantity';
+        }
+        axios.post(url, {
             products : JSON.stringify(currentCartItems)
         })
         .then(response => console.log(response));
@@ -365,16 +380,16 @@ export default {
         cartStore.commit('setAllCartItems', currentCartItems);
         cartStore.commit('setCurrentCartItemCount', this.cartItemCountVuex- 1);
         cartStore.commit('removeFromCurrentTotalPrice', price);
-    }
-  },
-
-    mounted() {
-        
     },
 
-    created: function () {
-
-        axios.get('http://localhost:8000/api/getCartProducts')
+    getCartProducts(isGuest) {
+        let url;
+        if (isGuest) {
+            url = 'http://localhost:8000/api/getGuestCartProducts';
+        } else {
+            url = 'http://localhost:8000/api/getCartProducts';
+        }
+        axios.get(url)
         .then((response) => {
             console.log(response);
             cartStore.commit('setAllCartItems', response.data.cartData);
@@ -383,6 +398,27 @@ export default {
         }, (error) => {
             console.log(error);
         });
+    }
+  },
+
+    mounted() {
+        
+    },
+
+    created: function () {
+        axios.get('http://localhost:8000/api/user').then((response) => {
+            if (response.data.name) {
+                this.isLoggedIn = true;
+                this.loggedInUser = response.data.name;
+                sessionStore.commit('isGuest', false);
+                this.getCartProducts(false);
+            }
+        }, () => {
+            sessionStore.commit('isGuest', true);
+            this.getCartProducts(true);
+        });
+
+        
         const options = {
             closeOnClick: false,
             coverTrigger: false,
@@ -394,12 +430,8 @@ export default {
             var elems2 = document.querySelectorAll('.dropdown-trigger2');
             M.Dropdown.init(elems2, options);
         });
-        axios.get('http://localhost:8000/api/user').then((response) => {
-            if (response.data.name) {
-                this.isLoggedIn = true;
-                this.loggedInUser = response.data.name;    
-            }
-        })
+
+        
     }
 };
 </script>
